@@ -1,4 +1,5 @@
 import 'package:devanshhooda/modules/home/core/home_repository.dart';
+import 'package:devanshhooda/modules/home/views/ui/map_screen.dart';
 import 'package:devanshhooda/modules/home/views/ui/profile_screen.dart';
 import 'package:devanshhooda/shared_widgets/loading_overlay_screen.dart';
 import 'package:devanshhooda/utils/app_colors.dart';
@@ -34,7 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
               physics: const NeverScrollableScrollPhysics(),
               onPageChanged: homeRepository.scrollToPage,
               children: [
-                const Center(child: Text("Home page")),
+                const MapScreen(),
                 const Center(child: Text("Activity page")),
                 const Center(child: Text("Community page")),
                 ProfileScreen(
