@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:devanshhooda/data/constants/preferences.dart';
-import 'package:devanshhooda/data/models/user_model.dart';
+import 'package:devanshhooda/data/models/user_model/user_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashRepository {

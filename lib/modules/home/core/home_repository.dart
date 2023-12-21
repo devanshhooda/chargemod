@@ -3,7 +3,7 @@ import 'dart:math';
 
 import 'package:devanshhooda/data/constants/endpoints.dart';
 import 'package:devanshhooda/data/constants/preferences.dart';
-import 'package:devanshhooda/data/models/user_model.dart';
+import 'package:devanshhooda/data/models/user_model/user_model.dart';
 import 'package:devanshhooda/data/network/network_exceptions.dart';
 import 'package:devanshhooda/data/network/network_services.dart';
 import 'package:flutter/material.dart';
