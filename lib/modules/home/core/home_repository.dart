@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:devanshhooda/data/constants/endpoints.dart';
 import 'package:devanshhooda/data/constants/preferences.dart';
+import 'package:devanshhooda/data/models/station_model/station_model.dart';
 import 'package:devanshhooda/data/models/user_model/user_model.dart';
 import 'package:devanshhooda/data/network/network_exceptions.dart';
 import 'package:devanshhooda/data/network/network_services.dart';
@@ -26,13 +27,16 @@ class HomeRepository extends ChangeNotifier {
           print("userDetailsFetchedFromServer: $userDetailsFetchedFromServer"));
     }
 
+    getAllLocations();
+
     print("userModel: $userModel");
   }
 
   // -> State vars here
-  bool isLoading = false;
+  bool isLoading = true;
   String? homePageError;
   int currentPageIndex = 0;
+  List<StationModel>? stationsList;
 
   // -> Methods here
   Future<void> _initSP() async {
@@ -128,17 +132,28 @@ class HomeRepository extends ChangeNotifier {
       int limit = 10}) async {
     try {
       String getLocationsRequestUrl =
-          "$lat/$long/${Endpoints.getAllLocations}?limit=$limit&page=$page";
+          "/$lat/$long${Endpoints.getAllLocations}?limit=$limit&page=$page";
 
-      print("accessToken: ${userModel.accessToken}");
+      // print("accessToken: ${userModel.accessToken}");
 
-      await _restClient.get(getLocationsRequestUrl,
+      var getLocationsResponse = await _restClient.get(getLocationsRequestUrl,
           headers: {"Authorization": "Bearer ${userModel.accessToken}"});
+
+      List stationModelMapList = getLocationsResponse['data']['result'];
+      List<StationModel> stationsList = [];
+
+      for (Map<String, dynamic> stationModelMap in stationModelMapList) {
+        stationsList.add(StationModel.fromJson(stationModelMap));
+      }
+
+      this.stationsList = stationsList;
     } on NetworkException catch (exception) {
       print(
           "<=> Exception in fetching all locations for map: ${exception.message}<=>"
           "\n<=> With status code: ${exception.statusCode}");
       homePageError = exception.message;
+
+      _startLoading();
 
       if (exception.statusCode == 401) {
         await _refreshAccessToken().then((result) => {
@@ -146,7 +161,6 @@ class HomeRepository extends ChangeNotifier {
                 getAllLocations(lat: lat, long: long, page: page, limit: limit)
             });
       }
-      _startLoading();
     } catch (exception) {
       print(
           "<=> Exception in fetching all locations for map: ${exception.toString()}");
@@ -157,17 +171,15 @@ class HomeRepository extends ChangeNotifier {
   }
 
   Future<bool> _fetchUserDetails() async {
-    _startLoading();
-
     try {
-      print("accessToken: ${this.userModel.accessToken}");
+      // print("accessToken: ${this.userModel.accessToken}");
 
       var userDetailsResponse = await _restClient.get(Endpoints.getUserDetails,
           headers: {"Authorization": "Bearer ${this.userModel.accessToken}"});
 
       var userDataMap = userDetailsResponse['data']['user'][0];
 
-      print("userDataMap: $userDataMap");
+      // print("userDataMap: $userDataMap");
 
       UserModel userModel = UserModel.fromJson(userDataMap);
 
@@ -175,9 +187,11 @@ class HomeRepository extends ChangeNotifier {
           accessToken: this.userModel.accessToken,
           isNewUser: this.userModel.isNewUser);
 
+      // print("updated userModel: ${this.userModel}");
+
       // Saving the initial user data here
       bool isUserSaved = await _sharedPreferences.setString(
-          Preferences.userModel, jsonEncode(userModel.toJson()));
+          Preferences.userModel, jsonEncode(this.userModel.toJson()));
 
       _stopLoading();
 
@@ -206,8 +220,8 @@ class HomeRepository extends ChangeNotifier {
     try {
       final String refreshToken = _getRefreshToken();
 
-      print("accessToken: ${userModel.accessToken}");
-      print("refreshToken: $refreshToken");
+      // print("accessToken: ${userModel.accessToken}");
+      // print("refreshToken: $refreshToken");
 
       await _restClient.post(Endpoints.logout,
           withoutVersion: true,
