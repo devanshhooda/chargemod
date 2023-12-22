@@ -9,11 +9,6 @@ class MapScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (homeRepository.stationsList == null ||
-        homeRepository.isLoading == true) {
-      return const Center(child: CircularProgressIndicator());
-    }
-
     if (homeRepository.homePageError != null) {
       return Center(
           child: Column(
@@ -25,6 +20,11 @@ class MapScreen extends StatelessWidget {
               icon: const Icon(Icons.replay_outlined))
         ],
       ));
+    }
+
+    if (homeRepository.isLoading == true ||
+        homeRepository.stationsList == null) {
+      return const Center(child: CircularProgressIndicator());
     }
 
     final screenSize = MediaQuery.of(context).size;
