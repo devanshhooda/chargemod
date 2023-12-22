@@ -35,12 +35,10 @@ class _HomeScreenState extends State<HomeScreen> {
               physics: const NeverScrollableScrollPhysics(),
               onPageChanged: homeRepository.scrollToPage,
               children: [
-                const MapScreen(),
+                MapScreen(homeRepository: homeRepository),
                 const Center(child: Text("Activity page")),
                 const Center(child: Text("Community page")),
-                ProfileScreen(
-                  homeRepository: homeRepository,
-                )
+                ProfileScreen(homeRepository: homeRepository)
               ],
             ))
           : const LoadingOverlayScreen(),

@@ -1,4 +1,4 @@
-import 'package:devanshhooda/data/models/user_model.dart';
+import 'package:devanshhooda/data/models/user_model/user_model.dart';
 import 'package:devanshhooda/modules/home/core/home_repository.dart';
 import 'package:devanshhooda/modules/home/views/ui/home_screen.dart';
 import 'package:devanshhooda/modules/sign_in/core/otp_repository.dart';
