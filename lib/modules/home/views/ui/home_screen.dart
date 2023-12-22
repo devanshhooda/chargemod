@@ -1,7 +1,6 @@
 import 'package:devanshhooda/modules/home/core/home_repository.dart';
 import 'package:devanshhooda/modules/home/views/ui/map_screen.dart';
 import 'package:devanshhooda/modules/home/views/ui/profile_screen.dart';
-import 'package:devanshhooda/shared_widgets/loading_overlay_screen.dart';
 import 'package:devanshhooda/utils/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -28,20 +27,18 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.backgroundAppColor,
-      body: homeRepository.isLoading == false
-          ? SafeArea(
-              child: PageView(
-              controller: homeRepository.pageController,
-              physics: const NeverScrollableScrollPhysics(),
-              onPageChanged: homeRepository.scrollToPage,
-              children: [
-                MapScreen(homeRepository: homeRepository),
-                const Center(child: Text("Activity page")),
-                const Center(child: Text("Community page")),
-                ProfileScreen(homeRepository: homeRepository)
-              ],
-            ))
-          : const LoadingOverlayScreen(),
+      body: SafeArea(
+          child: PageView(
+        controller: homeRepository.pageController,
+        physics: const NeverScrollableScrollPhysics(),
+        onPageChanged: homeRepository.scrollToPage,
+        children: [
+          MapScreen(homeRepository: homeRepository),
+          const Center(child: Text("Activity page")),
+          const Center(child: Text("Community page")),
+          ProfileScreen(homeRepository: homeRepository)
+        ],
+      )),
       bottomNavigationBar: ClipRRect(
         borderRadius: const BorderRadius.only(
           topRight: Radius.circular(15),

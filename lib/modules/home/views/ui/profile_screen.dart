@@ -3,7 +3,6 @@ import 'package:devanshhooda/modules/home/views/widgets/tile_buttons_container.d
 import 'package:devanshhooda/modules/splash/views/ui/splash_screen.dart';
 import 'package:devanshhooda/shared_widgets/common_button.dart';
 import 'package:devanshhooda/utils/app_colors.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -46,9 +45,7 @@ class ProfileScreen extends StatelessWidget {
                 (homeRepository.userModel.firstName != null &&
                         homeRepository.userModel.lastName != null)
                     ? Text(
-                        homeRepository.userModel.firstName! +
-                            " " +
-                            homeRepository.userModel.lastName!,
+                        "${homeRepository.userModel.firstName!} ${homeRepository.userModel.lastName!}",
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 20,
@@ -92,10 +89,12 @@ class ProfileScreen extends StatelessWidget {
                   onPressed: () =>
                       homeRepository.logoutUser().then((result) => {
                             if (result == true)
-                              Navigator.of(context).pushAndRemoveUntil(
-                                  CupertinoPageRoute(
-                                      builder: (context) => SplashScreen()),
-                                  (route) => false)
+                              Future.delayed(const Duration(seconds: 1)).then(
+                                  (value) => Navigator.pushAndRemoveUntil(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => SplashScreen()),
+                                      (route) => false))
                           })),
               const SizedBox(height: 50),
               SvgPicture.asset("assets/profile_page_logo.svg"),
